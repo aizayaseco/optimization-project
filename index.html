@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html ng-app="app">
+<head>
+	<meta charset="utf-8"/>
+    <title>CMSC 150 Project</title>
+    <link rel="stylesheet" type="text/css" href="semantic/semantic.min.css">
+    <link rel="stylesheet" type="text/css" href="css/styles.css">
+</head>
+<body>
+	<div ng-controller="mainController as main">
+		<div ng-hide="main.ETS"><br>
+		 <h4 class="ui horizontal divider header">
+				  <i class="line chart icon"></i>
+					ULTIMATE OPTIMIZER
+			  </h4>
+		</div><br>
+		<div ng-show="main.ETS"><br>
+		 <h4 class="ui horizontal divider header">
+				  <i class="shipping icon"></i>
+					EFFICIENT TRANSPORTATION SYSTEM
+			  </h4>
+		</div><br>
+		<div class="ui internally celled grid" ng-hide="main.ETS">
+			<div class="four wide column">
+			</div>
+			<div class="eight wide column">
+			  <div class="ui inverted segment">
+				  <text id="header">Notes on using Ultimate Optimizer</text>
+						<div class="item">
+							<i class="right triangle icon"></i> Use <text id="important"> decimal notation</text> for coefficients and constants instead of fraction. For instance, enter <text id="important">(1/2)</text> as <text id="important">0.5</text>.
+						</div>
+						<div class="item">
+							<i class="right triangle icon"></i> Do not use <text id="important"> * , × </text> in multiplying the coefficients and variables, instead, put them close together without space. For instance, enter <text id="important">4*x1</text> as <text id="important">4x1</text>.
+						</div>
+						<div class="item">
+							<i class="right triangle icon"></i> Isolate the cumulative variable of the objective function on the Left Hand Side (LHS), and the constants of constraints on the Right Hand Side (RHS).
+						</div>
+						<div class="item">
+							<i class="right triangle icon"></i> All commas in input will be ignored. The usage of commas in conefficients and constants are applicable e.g <text id="important">300,000</text>.
+						</div>
+						<div class="item">
+							<i class="right triangle icon"></i> Long dashes in input <text id="important">−</text> will be replaced by <text id="important">-</text>.
+						</div>
+				</div>
+			</div>
+			<div class="four wide column">
+			</div>
+			
+			<div class="four wide column">
+			</div>
+			<div class="eight wide column">
+				 <div class="field">
+					<div class="ui green horizontal label">Objective Function</div>
+					<div class="ui fluid action input">
+					  <input type="text" name="objFunction" ng-model="main.objFunction" required>	
+					  <select class="ui dropdown label" ng-model="main.isMaximize" id="important">
+							<option value="true">Maximize</option>
+							<option value="false">Minimize</option>
+						</select>
+		  
+					</div>
+				  </div>
+				
+				<div class= "ui segment">
+					<p id="header">Constraints</p>
+					<div class="field" id="constraints"  ng-repeat="c in main.constraints track by $index">
+						<div class="ui fluid action input">
+						  <input name="constLHS" type="text" ng-model="main.constraints[$index].lhs">
+						  <select ng-model="main.constraints[$index].inequality">
+							<option selected="" value="<=">&le;</option>
+							<option value=">=">	&ge;</option>
+							<option value="=">=</option>
+						  </select>
+						  <input name="constRHS" type="text" ng-model="main.constraints[$index].rhs">
+						<a class="remove field" ng-click="main.removeConstraint(c)">
+						<i class="grey large remove circle icon"></i></a>					  
+						</div>
+					</div>
+					<br>
+					<button class="ui button" id="addConst" ng-click="main.addConstraint()">Add Constraint  <i class="large grey plus icon "></i></button>
+				</div>
+			</div>
+			<div class="four wide column">
+			</div>		
+			
+			<div class="four wide column">
+			</div>
+			<div class="eight wide column">
+				<div class="ui centered padding grid">
+					<div class="ui huge primary submit button" ng-click="main.solve()">Solve</div>
+				</div>
+			</div>
+			<div class="four wide column">
+			</div>
+			<div class="four wide column">
+			</div>
+			<div class="eight wide column">
+				<div class="ui blue horizontal label">Optimal Solution</div>
+				<div class="ui fluid input focus">
+				  <input type="text" value="{{main.optimalSolution}}">
+				</div>
+			</div>
+			<div class="four wide column">
+			</div>
+		</div>
+		<div class="ui internally celled grid" ng-show="main.ETS">
+			<div class="four wide column">
+			</div>
+			<div class="eight wide column">
+			  <div class="ui inverted segment">
+				  <text id="header">Notes on using Efficient Transportation System</text>
+						<div class="item">
+							<i class="right triangle icon"></i> Use <text id="important"> decimal notation</text> for coefficients and constants instead of fraction. For instance, enter <text id="important">(1/2)</text> as <text id="important">0.5</text>.
+						</div>
+						<div class="item">
+							<i class="right triangle icon"></i> All commas in input will be ignored. The usage of commas in conefficients and constants are applicable e.g <text id="important">300,000</text>.
+						</div>
+						<div class="item">
+							<i class="right triangle icon"></i> Long dashes in input <text id="important">−</text> will be replaced by <text id="important">-</text>.
+						</div>
+						<div class="item">
+							<i class="right triangle icon"></i>Do not enter <text id="important">Float</text> data type in the input for number of sources and destinations.
+						</div>
+						<div class="item">
+							<i class="right triangle icon"></i> The recommended number of source and destination are <text id="important">eight</text>.
+						</div>
+				</div>
+			</div>
+			<div class="four wide column">
+			</div>
+			
+			<div class="four wide column">
+			</div>
+			<div class="eight wide column">
+				 <div class="field">
+					<div class="ui centered padded grid">
+					  <select class="ui huge dropdown label" ng-model="main.isMaximize" id="important">
+							<option value="true">Maximize</option>
+							<option value="false">Minimize</option>
+						</select>
+		  
+					</div>
+				  </div>
+
+				
+				<div class= "ui segment">
+					<text id="header">Number of Sources</text>
+						<div class="ui input">
+						  <input type="number" ng-model="main.mSource" placeholder="Source . .">
+						</div>
+					<br><text id="header">Number of Destinations</text>
+						<div class="ui input">
+						  <input type="number" ng-model="main.nDestinations" placeholder="Destinations . .">
+						</div><br><br>
+						<div class="ui center button" ng-click="main.next()">Next</div>
+					</div>
+					<div  class="ui two column padded grid">
+						<div class="column">
+						<text id="header">Capacity of sources</text>
+						  <select ng-model="main.sourceType">
+							<option selected="" value="tons">tons</option>
+							<option value="pounds">	pounds</option>
+							<option value="liters">liters</option>
+						  </select><br><br>
+							<div class="ui input" ng-repeat="s in main.sources track by $index">
+							<input type="number" ng-model="main.sources[$index]"><br>
+							<div class="floating ui tiny green label">{{$index+1}}</div>
+							</div>
+							
+						</div>
+						
+						<div class="column">
+						<text id="header">Demand of Destination</text>
+						<select ng-model="main.destinationType">
+							<option selected="" value="tons">tons</option>
+							<option value="pounds">	pounds</option>
+							<option value="liters">liters</option>
+						  </select><br><br>
+						<div class="ui input" ng-repeat="d in main.destinations track by $index">
+							<input type="number" ng-model="main.destinations[$index]">
+							<div class="floating ui tiny green label">{{$index+1}}</div>
+						</div>
+					
+						</div>
+							
+					</div>
+			</div>
+			<div class="four wide column">
+			</div>	
+				<br><br>
+				<div class="four wide column">
+			</div>	
+				<div class="eight wide column">
+						<text id="header">Cost Coefficients</text>
+						<select ng-model="main.costType">
+							<option selected="" value="$">$</option>
+							<option value="kilometers">	kilometers</option>
+							<option value="miles">miles</option>
+						  </select><br><br>
+						 <table>
+						<tr class="column-label">
+						  <td></td>
+						  <td ng-repeat="column in main.labelcols">{{column}}</th>
+						</tr>
+						<tr ng-repeat="row in main.costs track by $index">
+						  <td class="row-label">{{$index+1}}</td>
+						  <td ng-repeat="column in main.labelcols track by $index">
+							<div>
+							  <input id="input" type="number" ng-model="main.costs[$parent.$index][$index]"></input>
+							</div>
+						  </td>
+						</tr>
+					  </table>	
+					  <br><br>
+						 <text id="header">Objective Function: </text>
+							<div class="ui fluid input">
+							  <input type="text" value="{{main.objFunction}}">
+							</div><br>					  
+						<text id="header">Constraints</text>
+						<table class="ui selectable celled table">
+						<thead>
+							<tr class="column-label">
+							  <th>LHS</th>
+							  <th>Inequality</th>
+							  <th>RHS</th>
+							</tr>
+						</thead>
+						  <tbody>
+							<tr ng-repeat="row in main.constraints">
+							  <td ng-repeat="col in row track by $index">{{col}}</td>
+						   </tr>  
+						  </tbody>				  
+						</table>
+					</div>
+					<div class="four wide column">
+			</div>	
+				<br><br>
+			<div class="four wide column">
+			</div>
+			<div class="eight wide column">
+				<div class="ui centered padding grid">
+					<div class="ui huge primary submit button" ng-click="main.solveETS()">Solve</div>
+				</div>
+			</div>
+			<div class="four wide column">
+			</div>
+			<div class="four wide column">
+			</div>
+			<div class="eight wide column">
+				<div class="ui blue horizontal label">Optimal Solution</div>
+				<div class="ui fluid input focus">
+				  <input type="text" value="{{main.optimalSolution}}">
+				</div>
+			</div>
+			<div class="four wide column">
+			</div>
+		</div>
+		<br><br><br>
+		<div  class="ui two column padded grid" ng-show="main.showTable">
+			<div class="column">
+				<h3 class="important">Tableau {{main.currentPage+1}}</h3>
+				<div>
+					<table class="ui selectable celled table">
+					<thead>
+						<tr class="column-label">
+						  <th ng-repeat="header in main.headers track by $index">{{header}}</th>
+						</tr>
+					</thead>
+					  <tbody>
+						<tr ng-repeat="row in main.tables[main.currentPage].table">
+						  <td ng-repeat="col in row track by $index">{{col | number}}</td>
+					   </tr>  
+					  </tbody>				  
+					</table>
+					<div class="ui pagination menu">
+						<a class="icon item" ng-disabled="main.currentPage==0" ng-click="main.prevPage()">
+						  <i class="left chevron icon"></i>
+						</a>
+						<a class="item" ng-click="main.currentPage=0">Initial Table</a>
+						<a class="item" ng-click="main.currentPage=main.tables.length-1">Last Table</a>
+						<a class="icon item" ng-disabled="(main.currentPage)==(main.table.length-1)" ng-click="main.nextPage()">
+						  <i class="right chevron icon"></i>
+						</a>
+					 </div> 
+				</div>
+				<div class="ui divided list"><br>
+					<a class="item">
+						<div class="ui teal horizontal label">ACTIVE VARIABLES</div>
+						<div ng-repeat="a in main.tables[main.currentPage].active">{{a+" ,"}}</div>
+					</a>
+				  <a class="item">
+					<div class="ui grey horizontal label">INACTIVE VARIABLES</div>
+					<div ng-repeat="i in main.tables[main.currentPage].inactive">{{i+" ,"}}</div>
+				  </a>
+				  <a class="item">					
+				  </a>
+				</div>
+			</div>
+			
+			<div class="column"">
+				<h3 class="important">Graph</h3>
+				<div id="graphDiv">
+
+				</div>
+			</div>
+		</div>
+		
+				<br><br>
+		<div class="ui message" ng-hide="main.ETS">
+			<a ng-click="main.switchOpt()">
+				<div class="ui icon header center aligned segment">
+					<i class="shipping icon"></i>
+					<div class="content">
+					  EFFICIENT TRANSPORTATION SYSTEM
+					  <div class="sub header">involves optimization of several product sources and several destinations of products (Click to use)</div>
+					</div>
+				</div>
+			</a>
+		</div>
+		<div class="ui message" ng-show="main.ETS">
+			<a ng-click="main.switchOpt()">
+				<div class="ui icon header center aligned segment">
+					<i class="line chart icon"></i>
+					<div class="content">
+					  ULTIMATE Optimizer
+					  <div class="sub header">primary optimizer (Click to use)</div>
+					</div>
+				</div>
+			</a>
+		</div>
+	</div>
+	
+	 <div class="ui basic modal error" id="ERROR">
+            <i class="close icon"></i>
+            <div class="header">
+                INPUT ERROR
+            </div>
+            <div class="image content center">
+                <div class="image">
+                    <i class="warning circle icon"></i>
+                </div>
+                <div class="description">
+                    <h2>Please check your input in the Input Fields</h2>
+                </div>
+            </div>
+            <div class="actions">
+                <div class="two fluid ui inverted buttons">
+                    <div class="ui ok red basic inverted button">
+                    <i class="checkmark icon"></i>
+                    </div>
+                </div>
+             </div>
+        </div>
+
+		
+    <script type="text/javascript" src="js/jquery.js"></script>
+    <script src="semantic/semantic.min.js"></script>
+    <script type="text/javascript" src="js/angular.js"></script>
+	<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script type="text/javascript" src="app/app.js"></script>
+    <script type="text/javascript" src="app/main.controller.js"></script>
+    <script type="text/javascript" src="js/semantic.js"></script>
+
+</body>
+</html>
+
+<!--
+Author: Aizaya L. Seco
+Date: December 2, 2017
+Description: main page for the optimizer together with the efficient transport system
+-->
